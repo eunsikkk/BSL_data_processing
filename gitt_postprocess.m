@@ -94,20 +94,6 @@ total_voltage = [];
 
 
 
-for i = 1:length(data)
-    total_soc = [total_soc; data(i).SOC];
-    total_voltage = [total_voltage; data(i).V];
-
-end
-
-figure(1)
-
-plot(total_soc,total_voltage,'b')
-xlabel('State of Charge (SOC)');
-ylabel('Voltage');
-title('Voltage vs SOC');
-
-
 total_voltage = [];
 total_current = [];
 total_t = [];
@@ -126,7 +112,7 @@ yyaxis left
 plot(total_t, total_voltage, 'b-');
 xlabel('Time');
 ylabel('Voltage (V)');
-title('Voltage and Current vs Time');
+
 
 yyaxis right
 plot(total_t, total_current, 'r-');
@@ -135,20 +121,35 @@ ylim([-0.0005 0.0005])
 
 
 
-total_t = [];
-total_voltage = [];
+% 충전 시 SOC-Voltage 데이터
+total_soc_chg = [];
+total_voltage_chg = [];
 
-
-for i = 1:length(data)
-    total_t = [total_t; data(i).t];
-    total_voltage = [total_voltage; data(i).V];
+for i = step_chg
+    total_soc_chg = [total_soc_chg; data(i).SOC];
+    total_voltage_chg = [total_voltage_chg; data(i).V];
 end
 
-figure(4);
+% 방전 시 SOC-Voltage 데이터
+total_soc_dis = [];
+total_voltage_dis = [];
 
-plot(total_t, total_voltage, 'b-');
-xlabel('Time');
-ylabel('Voltage (V)');
+for i = step_dis
+    total_soc_dis = [total_soc_dis; data(i).SOC];
+    total_voltage_dis = [total_voltage_dis; data(i).V];
+end
+
+% 그래프 그리기
+figure;
+hold on;
+plot(total_soc_chg, total_voltage_chg, 'b', 'LineWidth', 1.5); % 충전: 빨간색
+plot(total_soc_dis, total_voltage_dis, 'r', 'LineWidth', 1.5); % 방전: 검정색
+xlabel('State of Charge');
+ylabel('Voltage');
+legend('Charge', 'Discharge');
+grid on;
+hold off;
+
 
 
 
